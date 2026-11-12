@@ -159,6 +159,13 @@ let q = -1;
 // 合計スコア（最初は0点）
 let score = 0;
 
+// クリアとゲームオーバーのライン（難しさを変えたいときはここを変える）
+const CLEAR_LINE = 50;      // この点数以上になったらクリア
+const GAMEOVER_LINE = -30;  // この点数以下になったらゲームオーバー
+
+// ルールを画面に表示する
+$("#rule").text(CLEAR_LINE + "点でクリア ／ " + GAMEOVER_LINE + "点でゲームオーバー");
+
 
 // ===== 問題ボタンを押したとき =====
 $("#question_btn").on("click", function () {
@@ -217,4 +224,39 @@ $(".choice_section button").on("click", function () {
   // 1問につき1回だけ答えられるよう、選択肢を押せなくする
   $(".choice_section button").prop("disabled", true);
   $("#result").hide().fadeIn(400);
+
+  // クリア・ゲームオーバーの判定
+  if (score >= CLEAR_LINE) {
+    showEnd("clear", "クリア！ 企業からの印象はばっちりです。");
+  } else if (score <= GAMEOVER_LINE) {
+    showEnd("gameover", "ゲームオーバー… 相手からどう見えるかを意識して、もう一度挑戦してみましょう。");
+  }
+});
+
+
+// ===== ゲーム終了の画面を出す =====
+// type には "clear" か "gameover" が入る（色の切り替えに使う）
+function showEnd(type, message) {
+  // これ以上問題を出せないようにする
+  $("#question_btn").prop("disabled", true);
+
+  $("#end_message").text(message);
+  $(".end_section").removeClass("hidden clear gameover").addClass(type);
+  $(".end_section").hide().fadeIn(600);
+}
+
+
+// ===== 「もう一度挑戦する」を押したとき =====
+$("#retry_btn").on("click", function () {
+  // スコアと問題を最初の状態に戻す
+  score = 0;
+  q = -1;
+  $("#score").text(score);
+
+  // 画面も最初の状態に戻す
+  $("#question").text("「問題を出す」を押してください");
+  $("#result").text("");
+  $(".choice_section").addClass("hidden");
+  $(".end_section").addClass("hidden");
+  $("#question_btn").prop("disabled", false);
 });
