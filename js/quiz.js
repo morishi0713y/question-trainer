@@ -138,7 +138,12 @@ let q = -1;
 // ===== 問題ボタンを押したとき =====
 $("#question_btn").on("click", function () {
   // 問題をランダムに決める（問題の数に合わせて自動で範囲が変わる）
-  q = Math.floor(Math.random() * questions.length);
+  // 前と同じ問題が出たら、違う問題になるまで選び直す
+  let next;
+  do {
+    next = Math.floor(Math.random() * questions.length);
+  } while (next === q);
+  q = next;
   const current = questions[q];
 
   // 前のコメントを消す
