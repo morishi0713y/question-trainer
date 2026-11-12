@@ -1,6 +1,7 @@
 // ===== 問題データ =====
 // 1問 = 1つのオブジェクト { question: 問題文, choices: [選択肢…] }
-// 選択肢 = { text: ボタンの文, comment: 押したときのコメント }
+// 選択肢 = { text: ボタンの文, comment: 押したときのコメント, point: 点数 }
+// 点数：良い印象 +10 ／ どちらとも言えない 0 ／ 悪い印象 -10
 // 問題を増やすときは、この配列にオブジェクトを足すだけでOK
 const questions = [
   {
@@ -10,14 +11,17 @@ const questions = [
       {
         text: "「AIを使った仕事をしたいです。AI部門はありますか？」",
         comment: "関心は伝わるが自分ファーストにも見えます。事前リサーチも忘れずに。",
+        point: 0,
       },
       {
         text: "「有給休暇は年間何日取得できますか？」",
         comment: "大事な質問ですが、いきなり休み重視な姿勢にも見えます。",
+        point: -10,
       },
       {
         text: "「今、チームではどんな新しい技術に取り組んでいますか？」",
         comment: "答えやすい聞き方で、相手の仕事に関心がある人だと映ります。",
+        point: 10,
       },
     ],
   },
@@ -28,14 +32,17 @@ const questions = [
       {
         text: "今は自分のターンではないので休憩する",
         comment: "他の人のことに無関心なように見えます。",
+        point: -10,
       },
       {
         text: "質問している人と答える人の方を向き、メモを取る",
         comment: "人の話を大切にする姿勢が伝わります。気が緩みやすい時間ほど、実はよく見られています。",
+        point: 10,
       },
       {
         text: "次に当ててもらえるよう、ずっと手を挙げて待つ",
         comment: "積極的ですが、自分の番のことばかり考えているように見えます。",
+        point: 0,
       },
     ],
   },
@@ -46,14 +53,17 @@ const questions = [
       {
         text: "止められるまで3つ全部続けて聞く",
         comment: "熱意は伝わりますが、時間への意識が薄い印象にも見えます。",
+        point: -10,
       },
       {
         text: "1つに絞って短く聞き、残りは進行役に時間があるか確認する",
         comment: "時間と他の参加者への気づかいが伝わります。",
+        point: 10,
       },
       {
         text: "時間がないので、今回は手を挙げない",
         comment: "慎重な判断ですが、関心が伝わらないままになってしまいます。",
+        point: 0,
       },
     ],
   },
@@ -64,14 +74,17 @@ const questions = [
       {
         text: "何も言わずに、すぐ質問に入る",
         comment: "早いのは良いですが、誰が聞いているのか相手に伝わりにくくなります。",
+        point: 0,
       },
       {
         text: "「本日はありがとうございます。〇〇（名前）です。」と短く名乗る",
         comment: "お礼と名前で、相手があなたを覚えるきっかけになります。",
+        point: 10,
       },
       {
         text: "自己紹介と自分の経歴を1分ほど話す",
         comment: "自分を知ってほしい気持ちは伝わりますが、質問の時間が短くなってしまいます。",
+        point: -10,
       },
     ],
   },
@@ -82,14 +95,17 @@ const questions = [
       {
         text: "わかったふりをして、うなずいておく",
         comment: "その場はおさまりますが、せっかくの答えが自分のものになりません。",
+        point: -10,
       },
       {
         text: "「〜という理解で合っていますか？」と、自分の言葉で確認する",
         comment: "ちゃんと聞いていたことが伝わり、相手も補足しやすくなります。",
+        point: 10,
       },
       {
         text: "「もう一度最初から説明してください」とお願いする",
         comment: "確認は大事ですが、どこがわからなかったかを伝えると相手が答えやすくなります。",
+        point: 0,
       },
     ],
   },
@@ -100,14 +116,17 @@ const questions = [
       {
         text: "同じ質問を、自分ももう一度聞く",
         comment: "話を聞いていなかったように見えてしまいます。",
+        point: -10,
       },
       {
         text: "質問するのをあきらめる",
         comment: "チャンスを逃してしまうので、もったいないです。",
+        point: 0,
       },
       {
         text: "今の答えをふまえて、もう一歩深い質問をする",
         comment: "話をよく聞いていて、考える力がある人だと映ります。",
+        point: 10,
       },
     ],
   },
@@ -118,14 +137,17 @@ const questions = [
       {
         text: "「ありがとうございました。〇〇がよくわかりました。」とお礼を言う",
         comment: "何が役に立ったかまで伝わり、良い印象で締めくくれます。",
+        point: 10,
       },
       {
         text: "答えを聞いたら、そのまま座る",
         comment: "失礼ではありませんが、少しそっけない印象になります。",
+        point: 0,
       },
       {
         text: "続けて、別の質問もする",
         comment: "熱意は伝わりますが、他の人の質問の時間が減ってしまいます。",
+        point: -10,
       },
     ],
   },
@@ -133,6 +155,9 @@ const questions = [
 
 // 今出している問題の番号。まだ問題を出していないときは -1
 let q = -1;
+
+// 合計スコア（最初は0点）
+let score = 0;
 
 
 // ===== 問題ボタンを押したとき =====
@@ -152,6 +177,8 @@ $("#question_btn").on("click", function () {
   $(".choice_section").removeClass("hidden");
   // 前の問題で選んだ色を消す
   $(".choice_section button").removeClass("selected");
+  // 選択肢を押せる状態に戻す（前の問題で押せなくしているため）
+  $(".choice_section button").prop("disabled", false);
 
   // 問題文と選択肢を表示
   $("#question").text(current.question);
@@ -170,10 +197,24 @@ $(".choice_section button").on("click", function () {
 
   // 押したボタンが何番目か（btn1 → 0、btn2 → 1、btn3 → 2）
   const index = $(".choice_section button").index(this);
-  $("#result").text(questions[q].choices[index].comment);
+  const choice = questions[q].choices[index];
+
+  // スコアを足して表示する
+  score = score + choice.point;
+  $("#score").text(score);
+
+  // 点数の表示（+10 のようにプラスも付ける）
+  let pointText = choice.point + "点";
+  if (choice.point > 0) {
+    pointText = "+" + pointText;
+  }
+  $("#result").text(choice.comment + "（" + pointText + "）");
 
   // 押したボタンだけに色を付ける
   $(".choice_section button").removeClass("selected");
   $(this).addClass("selected");
+
+  // 1問につき1回だけ答えられるよう、選択肢を押せなくする
+  $(".choice_section button").prop("disabled", true);
   $("#result").hide().fadeIn(400);
 });
