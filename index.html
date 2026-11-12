@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>質問トレーナー</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Potta+One&family=RocknRoll+One&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/quiz.css">
+</head>
+
+<body>
+  <main>
+
+    <!-- ① タイトル -->
+    <section class="title_section">
+      <h1>質問トレーナー</h1>
+      <p class="lead">企業説明会での質疑応答パートを練習してみましょう</p>
+    </section>
+
+    <!-- ② 問題ボタンと問題文（じゃんけんの「コンピュータの手は？？」の場所） -->
+    <section class="question_section">
+      <button id="question_btn">問題を出す</button>
+      <p id="question">「問題を出す」を押してください</p>
+    </section>
+
+    <!-- ③ 選択肢のボタン（じゃんけんのグー・チョキ・パーの場所） -->
+    <section class="choice_section hidden">
+      <button id="btn1">選択肢1</button>
+      <button id="btn2">選択肢2</button>
+      <button id="btn3">選択肢3</button>
+    </section>
+
+    <!-- ④ 結果コメント（じゃんけんの「勝敗は？？」の場所） -->
+    <section class="result_section">
+      <p id="result"></p>
+    </section>
+
+  </main>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+
+</html>
