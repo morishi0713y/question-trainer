@@ -102,6 +102,38 @@ button:active {
   transform: scale(0.98);
 }
 
+/* 答えたあとの選択肢（押せない状態） */
+.choice_section button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.choice_section button:disabled:hover {
+  background-color: white;
+  border-color: #d5e3da;
+}
+button:disabled:active {
+  transform: none;
+}
+
+/* 選んだ選択肢は、押せなくなっても目立たせる */
+.choice_section button.selected:disabled,
+.choice_section button.selected:disabled:hover {
+  opacity: 1;
+  background-color: #e3f1e7;
+  border-color: #0e6e3b;
+}
+
+/* スコア表示 */
+.score_box {
+  margin-top: 8px;
+  padding: 4px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #0e6e3b;
+  background-color: #eef6f0;
+  border-radius: 999px;
+}
+
 /* 問題を出す前は選択肢を隠す */
 .hidden {
   display: none;
