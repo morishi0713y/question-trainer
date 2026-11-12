@@ -19,6 +19,7 @@
       <h1>質問トレーナー</h1>
       <p class="lead">企業説明会での質疑応答パートを練習してみましょう</p>
       <p class="score_box">スコア：<span id="score">0</span>点</p>
+      <p id="rule"></p>
     </section>
 
     <!-- ② 問題ボタンと問題文（じゃんけんの「コンピュータの手は？？」の場所） -->
@@ -37,6 +38,12 @@
     <!-- ④ 結果コメント（じゃんけんの「勝敗は？？」の場所） -->
     <section class="result_section">
       <p id="result"></p>
+    </section>
+
+    <!-- ⑤ ゲーム終了（クリア・ゲームオーバーのときだけ表示） -->
+    <section class="end_section hidden">
+      <p id="end_message"></p>
+      <button id="retry_btn">もう一度挑戦する</button>
     </section>
 
   </main>
