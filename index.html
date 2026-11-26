@@ -18,8 +18,9 @@
     <section class="title_section">
       <h1>質問トレーナー</h1>
       <p class="lead">企業説明会での質疑応答パートを練習してみましょう</p>
-      <p class="score_box">スコア：<span id="score">0</span>点</p>
+      <p class="score_box">スコア：<span id="score">0</span>点 ／ 回答数：<span id="count">0</span>問</p>
       <p id="rule"></p>
+      <p id="resume_message" class="hidden"></p>
     </section>
 
     <!-- ② 問題ボタンと問題文（じゃんけんの「コンピュータの手は？？」の場所） -->
@@ -44,6 +45,16 @@
     <section class="end_section hidden">
       <p id="end_message"></p>
       <button id="retry_btn">もう一度挑戦する</button>
+    </section>
+
+    <!-- ⑥ これまでの挑戦（localStorage に保存。リロードしても残る） -->
+    <section class="record_section">
+      <div class="record_head">
+        <h2>これまでの挑戦</h2>
+        <button id="clear_record_btn">記録を消す</button>
+      </div>
+      <p id="record_empty">まだ記録はありません。クリアかゲームオーバーになると、ここに残ります。</p>
+      <ul id="record_list"></ul>
     </section>
 
   </main>

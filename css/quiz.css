@@ -250,3 +250,81 @@ button:disabled:active {
 #result:empty {
   display: none;
 }
+
+/* ===== セーブ＆ロード（課題4で追加） ===== */
+#resume_message {
+  font-size: 13px;
+  color: #0e6e3b;
+  background-color: #eef6f0;
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+/* ⑥ これまでの挑戦 */
+.record_section {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  border-top: 1px solid #e3ebe5;
+}
+
+.record_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.record_head h2 {
+  font-size: 16px;
+  color: #0e6e3b;
+}
+
+#clear_record_btn {
+  width: auto;
+  height: auto;
+  padding: 6px 12px;
+  font-size: 12px;
+  background-color: #f3f3f3;
+  color: #666;
+}
+
+#clear_record_btn:hover {
+  background-color: #e6e6e6;
+}
+
+#record_empty {
+  font-size: 13px;
+  color: #888;
+}
+
+#record_list {
+  list-style: none;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;          /* 記録が増えたら枠の中でスクロール */
+}
+
+#record_list li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #dde6e0;
+  font-size: 13px;
+}
+
+.record_date {
+  display: block;
+  font-size: 11px;
+  color: #999;
+}
+
+.record_result {
+  font-weight: bold;
+}
+
+#record_list li.clear .record_result {
+  color: #0e6e3b;
+}
+
+#record_list li.gameover .record_result {
+  color: #b3261e;
+}

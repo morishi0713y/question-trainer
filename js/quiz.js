@@ -159,12 +159,40 @@ let q = -1;
 // 合計スコア（最初は0点）
 let score = 0;
 
+// 答えた問題の数（何問でクリアしたかを記録するため）
+let count = 0;
+
+// localStorage に保存するときの名前（key）
+const SAVE_KEY = "question_trainer_save";      // 途中のスコア（セーブデータ）
+const RECORD_KEY = "question_trainer_records"; // これまでの挑戦の記録
+
+// これまでの挑戦の記録（配列）
+let records = [];
+
 // クリアとゲームオーバーのライン（難しさを変えたいときはここを変える）
 const CLEAR_LINE = 50;      // この点数以上になったらクリア
 const GAMEOVER_LINE = -30;  // この点数以下になったらゲームオーバー
 
 // ルールを画面に表示する
 $("#rule").text(CLEAR_LINE + "点でクリア ／ " + GAMEOVER_LINE + "点でゲームオーバー");
+
+
+// ===== ページを開いたとき：保存したデータを読み出す（ロード） =====
+// ① 途中のセーブデータがあれば、スコアと回答数を続きから再開する
+if (localStorage.getItem(SAVE_KEY)) {
+  const saveData = JSON.parse(localStorage.getItem(SAVE_KEY)); // JSON → オブジェクトに戻す
+  score = saveData.score;
+  count = saveData.count;
+  $("#resume_message").text("前回の続きから再開しました").removeClass("hidden");
+}
+$("#score").text(score);
+$("#count").text(count);
+
+// ② これまでの挑戦の記録があれば読み出して表示する
+if (localStorage.getItem(RECORD_KEY)) {
+  records = JSON.parse(localStorage.getItem(RECORD_KEY));
+}
+showRecords();
 
 
 // ===== 問題ボタンを押したとき =====
@@ -210,6 +238,14 @@ $(".choice_section button").on("click", function () {
   score = score + choice.point;
   $("#score").text(score);
 
+  // 回答数を1増やして表示する
+  count = count + 1;
+  $("#count").text(count);
+
+  // 途中のスコアを保存する（セーブ）。オブジェクトは JSON にしてから保存
+  const saveData = { score: score, count: count };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+
   // 点数の表示（+10 のようにプラスも付ける）
   let pointText = choice.point + "点";
   if (choice.point > 0) {
@@ -243,15 +279,70 @@ function showEnd(type, message) {
   $("#end_message").text(message);
   $(".end_section").removeClass("hidden clear gameover").addClass(type);
   $(".end_section").hide().fadeIn(600);
+
+  // 今回の挑戦を記録して保存する（新しいものを先頭に）
+  const record = {
+    date: new Date().toLocaleString("ja-JP"),
+    type: type,
+    score: score,
+    count: count,
+  };
+  records.unshift(record);
+  localStorage.setItem(RECORD_KEY, JSON.stringify(records));
+  showRecords();
+
+  // ゲームが終わったので、途中のセーブデータは消す
+  localStorage.removeItem(SAVE_KEY);
 }
+
+
+// ===== これまでの挑戦を画面に表示する =====
+function showRecords() {
+  const html = [];
+  for (let i = 0; i < records.length; i++) {
+    let label = "ゲームオーバー";
+    if (records[i].type === "clear") {
+      label = "クリア";
+    }
+    html.push(
+      '<li class="' + records[i].type + '">' +
+        '<span class="record_date">' + records[i].date + "</span>" +
+        '<span class="record_result">' + label + "</span>" +
+        "（" + records[i].count + "問・" + records[i].score + "点）" +
+      "</li>"
+    );
+  }
+  $("#record_list").html(html.join(""));
+
+  // 記録が0件のときだけ「まだ記録はありません」を出す
+  if (records.length === 0) {
+    $("#record_empty").show();
+  } else {
+    $("#record_empty").hide();
+  }
+}
+
+
+// ===== 「記録を消す」を押したとき =====
+$("#clear_record_btn").on("click", function () {
+  localStorage.removeItem(RECORD_KEY);
+  records = [];
+  showRecords();
+});
 
 
 // ===== 「もう一度挑戦する」を押したとき =====
 $("#retry_btn").on("click", function () {
   // スコアと問題を最初の状態に戻す
   score = 0;
+  count = 0;
   q = -1;
   $("#score").text(score);
+  $("#count").text(count);
+  $("#resume_message").addClass("hidden");
+
+  // 途中のセーブデータも消す
+  localStorage.removeItem(SAVE_KEY);
 
   // 画面も最初の状態に戻す
   $("#question").text("「問題を出す」を押してください");
